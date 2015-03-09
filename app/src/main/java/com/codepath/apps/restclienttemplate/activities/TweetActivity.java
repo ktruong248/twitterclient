@@ -4,19 +4,65 @@ import android.content.Intent;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.codepath.apps.restclienttemplate.R;
 
 public class TweetActivity extends ActionBarActivity {
 
+    private static final int MAX_TWEET_CHARS = 140;
+    private TextView tweetChars;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tweet);
+
+        tweetChars = (TextView) findViewById(R.id.tweetChars);
+
+        EditText tweetMsg = (EditText) findViewById(R.id.tweetMsg);
+        tweetMsg.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                Log.i(this.getClass().getCanonicalName(), "start " + start + " count " + count);
+                updateTweetRemain(start);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                Log.i(this.getClass().getCanonicalName(), "text change start " + start + " count " + count);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+    }
+
+    private void updateTweetRemain(int currentCount) {
+        if (currentCount == 0) {
+            tweetChars.setText("");
+        } else {
+            int remain = MAX_TWEET_CHARS - currentCount;
+
+            if(remain == 0) {
+                tweetChars.setText(R.string.maxTweetChars);
+            }else{
+                String remainText = remain + " characters remains";
+                tweetChars.setText(remainText);
+            }
+        }
     }
 
 
@@ -56,7 +102,7 @@ public class TweetActivity extends ActionBarActivity {
                 return true;
             }
         });
-        
+
         return true;
     }
 
@@ -67,8 +113,8 @@ public class TweetActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if(id == R.id.composeTweet) {
-            
+        if (id == R.id.composeTweet) {
+
         }
         //noinspection SimplifiableIfStatement
 //        if (id == R.id.action_settings) {
@@ -77,4 +123,6 @@ public class TweetActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
 }

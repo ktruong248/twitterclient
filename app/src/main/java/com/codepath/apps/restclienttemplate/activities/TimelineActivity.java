@@ -61,7 +61,6 @@ public class TimelineActivity extends ActionBarActivity {
 
         swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
         // Setup refresh listener which triggers new data loading
-        swipeContainer.setRefreshing(false);
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -89,11 +88,13 @@ public class TimelineActivity extends ActionBarActivity {
                 Log.i(this.getClass().getSimpleName(), response.toString());
                 tweets.clear();
                 tweetAdapter.addAll(Tweet.fromArrayJSON(response));
+                swipeContainer.setRefreshing(false);
             }
 
             @Override
             public void onFailure(int i, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 Log.i(this.getClass().getSimpleName(), "failed " + errorResponse.toString(), throwable);
+                swipeContainer.setRefreshing(false);
             }
         });
     }
@@ -102,9 +103,6 @@ public class TimelineActivity extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_timeline, menu);
-
-//        ActionBar bar = getActionBar();
-//        bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#00aced")));
 
         return true;
     }

@@ -37,17 +37,7 @@ public class TweetArrayAdapter extends ArrayAdapter<Tweet> {
     }
 
     /**
-     *         if (convertView == null) {
-     viewHolder = new ViewHolder();
-     convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_photo_grid, parent, false);
-
-     viewHolder.imageView = (ImageView) convertView.findViewById(R.id.photoImageView);
-     viewHolder.imageTitle = (TextView) convertView.findViewById(R.id.imageTitle);
-
-     convertView.setTag(viewHolder);
-     } else {
-     viewHolder = (ViewHolder) convertView.getTag();
-     }* 
+     *
      * @param position
      * @param convertView
      * @param parent

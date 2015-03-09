@@ -18,5 +18,7 @@
     <string name="saveTweet">Tweet</string>
     <string name="default_tweet_msg">What\'s happening ?</string>
     <string name="cancelTweet">Cancel</string>
+    <string name="authenticated">Authenticated</string>
+    <string name="maxTweetChars">Reach Maximum Characters Allowed</string>
 
 </resources>
