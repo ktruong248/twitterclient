@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.codepath.apps.restclienttemplate.R;
 import com.codepath.apps.restclienttemplate.RestApplication;
@@ -24,6 +25,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -94,6 +96,16 @@ public class TimelineActivity extends ActionBarActivity {
             @Override
             public void onFailure(int i, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 Log.i(this.getClass().getSimpleName(), "failed " + errorResponse.toString(), throwable);
+                JSONArray errors = null;
+                try {
+                    errors = errorResponse.getJSONArray("errors");
+                    if(errors != null && errors.length() > 0) {
+                        Toast.makeText(TimelineActivity.this, errors.getJSONObject(0).getString("message"), Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    Log.e(this.getClass().getName(), "failed to get json errors", e);
+                }
+
                 swipeContainer.setRefreshing(false);
             }
         });

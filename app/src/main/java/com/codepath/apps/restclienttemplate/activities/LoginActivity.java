@@ -42,6 +42,7 @@ public class LoginActivity extends OAuthLoginActionBarActivity<RestClient> {
 	@Override
 	public void onLoginFailure(Exception e) {
 		e.printStackTrace();
+        Toast.makeText(this, "Failed to Authenticated", Toast.LENGTH_SHORT).show();
 	}
 
 	// Click handler method for the button used to start OAuth flow

@@ -55,6 +55,8 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/tweet_desc"
         android:id="@+id/tweetDescription"
+        android:autoLink="all"
+        android:linksClickable="true"
         android:layout_below="@+id/userName"
         android:layout_alignLeft="@+id/userName"
         android:layout_alignStart="@+id/userName" />
