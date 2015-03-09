@@ -26,7 +26,7 @@ public class Utils {
         String[] hourTokenizer = relativeTimeSpanString.toString().split(" ");
         String format = "";
 
-        Log.i("Utils", relativeTimeSpanString.toString());
+//        Log.i("Utils", relativeTimeSpanString.toString());
         
         if(hourTokenizer.length == 1 && hourTokenizer[0].equals("Yesterday")) {
             format = "1d";

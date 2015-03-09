@@ -1,6 +1,7 @@
 package com.codepath.apps.restclienttemplate.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +12,9 @@ import android.widget.TextView;
 
 import com.codepath.apps.restclienttemplate.R;
 import com.codepath.apps.restclienttemplate.models.Tweet;
+import com.makeramen.RoundedTransformationBuilder;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 
 import java.util.List;
 
@@ -72,8 +75,13 @@ public class TweetArrayAdapter extends ArrayAdapter<Tweet> {
         }
 
         viewHolder.profileImageUrl.setImageResource(0);
-        Picasso.with(getContext()).load(tweet.getUser().getProfileImgUrl()).fit().placeholder(R.drawable.ic_launcher).into(viewHolder.profileImageUrl);
-
+        Transformation transformation = new RoundedTransformationBuilder()
+                .borderColor(Color.TRANSPARENT).scaleType(ImageView.ScaleType.FIT_CENTER)
+                .borderWidthDp(3)
+                .cornerRadiusDp(30)
+                .build();
+        Picasso.with(getContext()).load(tweet.getUser().getProfileImgUrl()).transform(transformation).fit().placeholder(R.drawable.ic_launcher).into(viewHolder.profileImageUrl);
+        
         viewHolder.userName.setText(tweet.getUser().getName());
         viewHolder.screenName.setText(tweet.getUser().getScreenName());
         viewHolder.tweetSince.setText(tweet.getCreatedAt());

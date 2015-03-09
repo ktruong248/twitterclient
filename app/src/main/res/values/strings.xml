@@ -13,5 +13,10 @@
     <string name="tweet_since">tweet since</string>
     <string name="tweet_desc">description</string>
     <string name="user_name">user name</string>
+    <string name="title_activity_tweet"></string>
+    <string name="composeTweet">Compose</string>
+    <string name="saveTweet">Tweet</string>
+    <string name="default_tweet_msg">What\'s happening ?</string>
+    <string name="cancelTweet">Cancel</string>
 
 </resources>
