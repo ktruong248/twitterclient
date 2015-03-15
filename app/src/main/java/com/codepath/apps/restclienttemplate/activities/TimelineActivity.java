@@ -18,6 +18,8 @@ import com.codepath.apps.restclienttemplate.R;
 import com.codepath.apps.restclienttemplate.RestApplication;
 import com.codepath.apps.restclienttemplate.RestClient;
 import com.codepath.apps.restclienttemplate.adapter.TweetArrayAdapter;
+import com.codepath.apps.restclienttemplate.fragment.HomeTimeLineFragment;
+import com.codepath.apps.restclienttemplate.fragment.TweetsListFragment;
 import com.codepath.apps.restclienttemplate.listener.EndlessScrollListener;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -34,82 +36,111 @@ public class TimelineActivity extends ActionBarActivity {
 
     public static final int COUNT_PER_PAGE = 25;
     private static final int TWEET_REQUEST_CODE = 20;
-    private RestClient restClient;
-    private ArrayList<Tweet> tweets;
-    private TweetArrayAdapter tweetAdapter;
-    private SwipeRefreshLayout swipeContainer;
+////    private RestClient restClient;
+//    private ArrayList<Tweet> tweets;
+//    private TweetArrayAdapter tweetAdapter;
+//    private SwipeRefreshLayout swipeContainer;
+    private HomeTimeLineFragment homeTimeLineFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
 
-        restClient = RestApplication.getRestClient();
+        if(savedInstanceState == null) {
+            homeTimeLineFragment = (HomeTimeLineFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_timeline);
+        }
+//        restClient = RestApplication.getRestClient();
 
-        ListView tweetsView = (ListView) findViewById(R.id.lvTweet);
+//        populateTimeLine(1, COUNT_PER_PAGE);
+//        // only need to set fragment if it not already created
+//        if (savedInstanceState == null) {
+//            tweetsListFragment = (TweetsListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_timeline);
+//            tweetsListFragment.setOnScrollListener(new EndlessScrollListener() {
+//                @Override
+//                public void onLoadMore(int page, int totalItemsCount) {
+//                    // Triggered only when new data needs to be appended to the list
+//                    // Add whatever code is needed to append new items to your AdapterView
+//                    populateTimeLine(page, totalItemsCount);
+//                }
+//            });
+//            tweetsListFragment.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//                @Override
+//                public void onRefresh() {
+//                    // Your code to refresh the list here.
+//                    // Make sure you call swipeContainer.setRefreshing(false)
+//                    // once the network request has completed successfully.
+//                    tweets.clear();
+//                    populateTimeLine(1, COUNT_PER_PAGE);
+//                }
+//            });
+//        }
 
-        tweets = new ArrayList<>();
-
-        tweetAdapter = new TweetArrayAdapter(this, tweets);
-        tweetsView.setAdapter(tweetAdapter);
-        tweetsView.setOnScrollListener(new EndlessScrollListener() {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount) {
-                // Triggered only when new data needs to be appended to the list
-                // Add whatever code is needed to append new items to your AdapterView
-                populateTimeLine(page, totalItemsCount);
-            }
-        });
-
-        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
-        // Setup refresh listener which triggers new data loading
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                // Your code to refresh the list here.
-                // Make sure you call swipeContainer.setRefreshing(false)
-                // once the network request has completed successfully.
-                tweets.clear();
-                populateTimeLine(1, COUNT_PER_PAGE);
-            }
-        });
-
-        // Configure the refreshing colors
-        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
-
-        populateTimeLine(1, COUNT_PER_PAGE);
+//        ListView tweetsView = (ListView) findViewById(R.id.lvTweet);
+//
+//        tweets = new ArrayList<>();
+//
+//        tweetAdapter = new TweetArrayAdapter(this, tweets);
+//        tweetsView.setAdapter(tweetAdapter);
+//        tweetsView.setOnScrollListener(new EndlessScrollListener() {
+//            @Override
+//            public void onLoadMore(int page, int totalItemsCount) {
+//                // Triggered only when new data needs to be appended to the list
+//                // Add whatever code is needed to append new items to your AdapterView
+//                populateTimeLine(page, totalItemsCount);
+//            }
+//        });
+//
+//        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+//        // Setup refresh listener which triggers new data loading
+//        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//            @Override
+//            public void onRefresh() {
+//                // Your code to refresh the list here.
+//                // Make sure you call swipeContainer.setRefreshing(false)
+//                // once the network request has completed successfully.
+//                tweets.clear();
+//                populateTimeLine(1, COUNT_PER_PAGE);
+//            }
+//        });
+//
+//        // Configure the refreshing colors
+//        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+//                android.R.color.holo_green_light,
+//                android.R.color.holo_orange_light,
+//                android.R.color.holo_red_light);
+//
     }
 
-    public void populateTimeLine(int page, int countPerPage) {
-        restClient.getTimeLine(page, countPerPage, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int i, Header[] headers, JSONArray response) {
-                Log.i(this.getClass().getSimpleName(), response.toString());
-                tweets.clear();
-                tweetAdapter.addAll(Tweet.fromArrayJSON(response));
-                swipeContainer.setRefreshing(false);
-            }
-
-            @Override
-            public void onFailure(int i, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                Log.i(this.getClass().getSimpleName(), "failed " + errorResponse.toString(), throwable);
-                JSONArray errors = null;
-                try {
-                    errors = errorResponse.getJSONArray("errors");
-                    if(errors != null && errors.length() > 0) {
-                        Toast.makeText(TimelineActivity.this, errors.getJSONObject(0).getString("message"), Toast.LENGTH_SHORT).show();
-                    }
-                } catch (JSONException e) {
-                    Log.e(this.getClass().getName(), "failed to get json errors", e);
-                }
-
-                swipeContainer.setRefreshing(false);
-            }
-        });
-    }
+//    public void populateTimeLine(int page, int countPerPage) {
+//        restClient.getTimeLine(page, countPerPage, new JsonHttpResponseHandler() {
+//            @Override
+//            public void onSuccess(int i, Header[] headers, JSONArray response) {
+//                Log.i(this.getClass().getSimpleName(), response.toString());
+////                tweets.clear();
+////                tweetAdapter.addAll(Tweet.fromArrayJSON(response));
+////                swipeContainer.setRefreshing(false);
+//                tweetsListFragment.addAll(Tweet.fromArrayJSON(response));
+//            }
+//
+//            @Override
+//            public void onFailure(int i, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+//                Log.i(this.getClass().getSimpleName(), "failed " + errorResponse.toString(), throwable);
+//                JSONArray errors = null;
+//                try {
+//                    errors = errorResponse.getJSONArray("errors");
+//                    if (errors != null && errors.length() > 0) {
+////                        Toast.makeText(TimelineActivity.this, errors.getJSONObject(0).getString("message"), Toast.LENGTH_SHORT).show();
+//                        tweetsListFragment.showToastText(errors.getJSONObject(0).getString("message"), Toast.LENGTH_SHORT);
+//                    }
+//                } catch (JSONException e) {
+//                    Log.e(this.getClass().getName(), "failed to get json errors", e);
+//                }
+//
+////                swipeContainer.setRefreshing(false);
+//            }
+//        });
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -147,22 +178,24 @@ public class TimelineActivity extends ActionBarActivity {
                 String tweetMsg = data.getStringExtra("tweetMsg");
                 Log.i(this.getClass().getCanonicalName(), tweetMsg);
 
-                if (!tweetMsg.isEmpty()) {
-                    restClient.createTweet(tweetMsg, new JsonHttpResponseHandler() {
-                        @Override
-                        public void onSuccess(int i, Header[] headers, JSONObject response) {
-                            Log.i(this.getClass().getSimpleName(), response.toString());
-                            populateTimeLine(1, COUNT_PER_PAGE);
-                        }
-
-                        @Override
-                        public void onFailure(int i, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                            Log.i(this.getClass().getSimpleName(), "failed " + errorResponse.toString(), throwable);
-                        }
-
-                    });
-                }
-            }else if(resultCode == RESULT_CANCELED) {
+                homeTimeLineFragment.createTweetAndReload(tweetMsg);
+//                if (!tweetMsg.isEmpty()) {
+//                    restClient.createTweet(tweetMsg, new JsonHttpResponseHandler() {
+//                        @Override
+//                        public void onSuccess(int i, Header[] headers, JSONObject response) {
+//                            Log.i(this.getClass().getSimpleName(), response.toString());
+//                            populateTimeLine(1, COUNT_PER_PAGE);
+//                        }
+//
+//                        @Override
+//                        public void onFailure(int i, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+//                            Log.i(this.getClass().getSimpleName(), "failed " + errorResponse.toString(), throwable);
+//                        }
+//
+//                    });
+//                    homeTimeLineFragment.createTweetAndReload(tweetMsg);
+//                }
+            } else if (resultCode == RESULT_CANCELED) {
                 Log.i(this.getClass().getCanonicalName(), "canceled");
             }
         }
