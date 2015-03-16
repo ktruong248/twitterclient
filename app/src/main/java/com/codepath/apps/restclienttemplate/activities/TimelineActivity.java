@@ -24,6 +24,7 @@ import com.codepath.apps.restclienttemplate.R;
 import com.codepath.apps.restclienttemplate.RestApplication;
 import com.codepath.apps.restclienttemplate.RestClient;
 import com.codepath.apps.restclienttemplate.adapter.TweetArrayAdapter;
+import com.codepath.apps.restclienttemplate.adapter.TweetsPagerAdapter;
 import com.codepath.apps.restclienttemplate.fragment.HomeTimeLineFragment;
 import com.codepath.apps.restclienttemplate.fragment.MentionTimeLineFragment;
 import com.codepath.apps.restclienttemplate.fragment.TweetsListFragment;
@@ -62,9 +63,6 @@ public class TimelineActivity extends ActionBarActivity {
         PagerSlidingTabStrip pagerSlidingTabStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
         pagerSlidingTabStrip.setViewPager(viewPager);
         pagerSlidingTabStrip.setTextColorResource(R.color.actionbar_background);
-//        if(savedInstanceState == null) {
-//            homeTimeLineFragment = (HomeTimeLineFragment) getSupportFragmentManager().findFragmentById(R.id.viewpager);
-//        }
     }
 
 
@@ -137,36 +135,6 @@ public class TimelineActivity extends ActionBarActivity {
             }
         } else if (resultCode == RESULT_CANCELED) {
             Log.i(this.getClass().getCanonicalName(), "canceled");
-        }
-    }
-
-
-    public class TweetsPagerAdapter extends FragmentPagerAdapter implements PagerSlidingTabStrip.IconTabProvider {
-        private int tabIcons[] = {R.drawable.twitter_circle_whitebird_128, R.drawable.twitter_mention_128};
-
-        public TweetsPagerAdapter(FragmentManager fragmentManager) {
-            super(fragmentManager);
-        }
-
-        @Override
-        public int getPageIconResId(int position) {
-            return tabIcons[position];
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            if (position == 0) {
-                return new HomeTimeLineFragment();
-            } else if (position == 1) {
-                return new MentionTimeLineFragment();
-            }
-
-            return null;
-        }
-
-        @Override
-        public int getCount() {
-            return tabIcons.length;
         }
     }
 }
