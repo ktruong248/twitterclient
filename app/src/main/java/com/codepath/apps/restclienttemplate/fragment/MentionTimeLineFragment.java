@@ -5,10 +5,8 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.codepath.apps.restclienttemplate.R;
 import com.codepath.apps.restclienttemplate.RestApplication;
 import com.codepath.apps.restclienttemplate.RestClient;
-import com.codepath.apps.restclienttemplate.adapter.TweetArrayAdapter;
 import com.codepath.apps.restclienttemplate.listener.EndlessScrollListener;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -18,14 +16,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ktruong on 3/15/15.
  */
-public class HomeTimeLineFragment extends TweetsListFragment {
-
+public class MentionTimeLineFragment extends TweetsListFragment {
     public static final int COUNT_PER_PAGE = 25;
+
     private RestClient restClient;
 
     @Override
@@ -33,32 +31,39 @@ public class HomeTimeLineFragment extends TweetsListFragment {
         super.onCreate(savedInstanceState);
 
         restClient = RestApplication.getRestClient();
-        populateTimeLine(1, COUNT_PER_PAGE);
-        // only need to set fragment if it not already created
+        getMentionAndPopulate(1, COUNT_PER_PAGE);
+
+//        populateTimeLine(1, COUNT_PER_PAGE);
+//        // only need to set fragment if it not already created
         if (savedInstanceState == null) {
             setOnScrollListener(new EndlessScrollListener() {
                 @Override
                 public void onLoadMore(int page, int totalItemsCount) {
                     // Triggered only when new data needs to be appended to the list
                     // Add whatever code is needed to append new items to your AdapterView
-                    populateTimeLine(page, totalItemsCount);
+                    getMentionAndPopulate(page, totalItemsCount);
                 }
             });
             setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
-                    populateTimeLine(1, COUNT_PER_PAGE);
+                    getMentionAndPopulate(1, COUNT_PER_PAGE);
                 }
             });
         }
     }
 
-    public void populateTimeLine(int page, int countPerPage) {
-        restClient.getTimeLine(page, countPerPage, new JsonHttpResponseHandler() {
+    public void getMentionAndPopulate(int page, int countPerPage) {
+        restClient.getMentionsTimeLine(page, countPerPage, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int i, Header[] headers, JSONArray response) {
                 Log.i(this.getClass().getSimpleName(), response.toString());
-                addAll(Tweet.fromArrayJSON(response));
+                List<Tweet> newTweets = Tweet.fromArrayJSON(response);
+                if (newTweets.isEmpty()) {
+                    showToastText("No Mentions", Toast.LENGTH_SHORT);
+                } else {
+                    addAll(newTweets);
+                }
             }
 
             @Override
@@ -77,21 +82,4 @@ public class HomeTimeLineFragment extends TweetsListFragment {
         });
     }
 
-    public void createTweetAndReload(String tweetMsg) {
-        if (!tweetMsg.isEmpty()) {
-            restClient.createTweet(tweetMsg, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int i, Header[] headers, JSONObject response) {
-                    Log.i(this.getClass().getSimpleName(), response.toString());
-                    populateTimeLine(1, COUNT_PER_PAGE);
-                }
-
-                @Override
-                public void onFailure(int i, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    Log.i(this.getClass().getSimpleName(), "failed " + errorResponse.toString(), throwable);
-                }
-
-            });
-        }
-    }
 }
