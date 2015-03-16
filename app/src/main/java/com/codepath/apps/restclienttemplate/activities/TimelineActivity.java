@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -26,6 +27,7 @@ import com.codepath.apps.restclienttemplate.adapter.TweetArrayAdapter;
 import com.codepath.apps.restclienttemplate.fragment.HomeTimeLineFragment;
 import com.codepath.apps.restclienttemplate.fragment.MentionTimeLineFragment;
 import com.codepath.apps.restclienttemplate.fragment.TweetsListFragment;
+import com.codepath.apps.restclienttemplate.fragment.UserTimeLineFragment;
 import com.codepath.apps.restclienttemplate.listener.EndlessScrollListener;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -37,25 +39,31 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class TimelineActivity extends ActionBarActivity {
 
     private static final int TWEET_REQUEST_CODE = 20;
-    private HomeTimeLineFragment homeTimeLineFragment;
+    //    private HomeTimeLineFragment homeTimeLineFragment;
+    private RestClient restClient;
+    private TweetsPagerAdapter tweetsPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
 
+        restClient = RestApplication.getRestClient();
+
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        viewPager.setAdapter(new TweetsPagerAdapter(getSupportFragmentManager()));
+        tweetsPagerAdapter = new TweetsPagerAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(tweetsPagerAdapter);
 
         PagerSlidingTabStrip pagerSlidingTabStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
         pagerSlidingTabStrip.setViewPager(viewPager);
         pagerSlidingTabStrip.setTextColorResource(R.color.actionbar_background);
 //        if(savedInstanceState == null) {
-//            homeTimeLineFragment = (HomeTimeLineFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_timeline);
+//            homeTimeLineFragment = (HomeTimeLineFragment) getSupportFragmentManager().findFragmentById(R.id.viewpager);
 //        }
     }
 
@@ -98,14 +106,40 @@ public class TimelineActivity extends ActionBarActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == TWEET_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                String tweetMsg = data.getStringExtra("tweetMsg");
+                final String tweetMsg = data.getStringExtra("tweetMsg");
                 Log.i(this.getClass().getCanonicalName(), tweetMsg);
-                homeTimeLineFragment.createTweetAndReload(tweetMsg);
-            } else if (resultCode == RESULT_CANCELED) {
-                Log.i(this.getClass().getCanonicalName(), "canceled");
+
+                if (!tweetMsg.isEmpty()) {
+                    restClient.createTweet(tweetMsg, new JsonHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int i, Header[] headers, JSONObject response) {
+                            Log.i(this.getClass().getSimpleName(), response.toString());
+
+                            Tweet createdTweet = Tweet.fromJSON(response);
+
+                            List<Fragment> fragments = getSupportFragmentManager().getFragments();
+                            for (Fragment fragment : fragments) {
+                                if(fragment instanceof HomeTimeLineFragment) {
+                                    HomeTimeLineFragment homeTimeLineFragment = (HomeTimeLineFragment) fragment;
+                                    homeTimeLineFragment.addTweet(createdTweet);
+                                    break;
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(int i, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                            Log.i(this.getClass().getSimpleName(), "failed " + errorResponse.toString(), throwable);
+                        }
+
+                    });
+                }
             }
+        } else if (resultCode == RESULT_CANCELED) {
+            Log.i(this.getClass().getCanonicalName(), "canceled");
         }
     }
+
 
     public class TweetsPagerAdapter extends FragmentPagerAdapter implements PagerSlidingTabStrip.IconTabProvider {
         private int tabIcons[] = {R.drawable.twitter_circle_whitebird_128, R.drawable.twitter_mention_128};
@@ -121,10 +155,10 @@ public class TimelineActivity extends ActionBarActivity {
 
         @Override
         public Fragment getItem(int position) {
-            if(position == 0) {
+            if (position == 0) {
                 return new HomeTimeLineFragment();
-            }else if (position == 1) {
-                return new  MentionTimeLineFragment();
+            } else if (position == 1) {
+                return new MentionTimeLineFragment();
             }
 
             return null;

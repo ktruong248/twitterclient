@@ -1,7 +1,9 @@
 package com.codepath.apps.restclienttemplate.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -19,6 +21,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ktruong on 3/15/15.
@@ -93,5 +96,19 @@ public class HomeTimeLineFragment extends TweetsListFragment {
 
             });
         }
+    }
+
+    public static HomeTimeLineFragment newInstance(String newTweetMsg) {
+        HomeTimeLineFragment fragment = new HomeTimeLineFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("newTweetMsg", newTweetMsg);
+
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    public void addTweet(Tweet createdTweet) {
+        tweets.add(0, createdTweet);
+        tweetAdapter.notifyDataSetChanged();
     }
 }

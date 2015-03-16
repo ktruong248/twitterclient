@@ -1,5 +1,6 @@
 package com.codepath.apps.restclienttemplate.fragment;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -7,7 +8,6 @@ import android.widget.Toast;
 import com.codepath.apps.restclienttemplate.RestApplication;
 import com.codepath.apps.restclienttemplate.RestClient;
 import com.codepath.apps.restclienttemplate.models.Tweet;
-import com.codepath.apps.restclienttemplate.models.User;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.apache.http.Header;
@@ -27,7 +27,7 @@ public class UserTimeLineFragment extends TweetsListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         restClient = RestApplication.getRestClient();
-        getUserTimeLineAndPopuplate(1, COUNT_PER_PAGE);
+        getUserTimeLineAndPopulate(1, COUNT_PER_PAGE);
 
     }
 
@@ -39,10 +39,11 @@ public class UserTimeLineFragment extends TweetsListFragment {
         fragment.setArguments(bundle);
         return fragment;
     }
-    public void getUserTimeLineAndPopuplate(int page, int countPerPage) {
+
+    public void getUserTimeLineAndPopulate(int page, int countPerPage) {
         String screenName = getArguments().getString("screenName"); // since this is null twitter default to current user
 
-        restClient.getUserTimeLine(COUNT_PER_PAGE, screenName, new JsonHttpResponseHandler() {
+        restClient.getUserTimeLine(countPerPage, screenName, new JsonHttpResponseHandler() {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
