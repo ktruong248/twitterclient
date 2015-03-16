@@ -20,5 +20,8 @@
     <string name="cancelTweet">Cancel</string>
     <string name="authenticated">Authenticated</string>
     <string name="maxTweetChars">Reach Maximum Characters Allowed</string>
+    <string name="icProfile">Profile</string>
+    <string name="title_activity_profile">ProfileActivity</string>
+    <string name="defaultTagLine">TagLine</string>
 
 </resources>

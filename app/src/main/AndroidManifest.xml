@@ -13,8 +13,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-    <!--<android:uses-permission android:name="android.permission.READ_PHONE_STATE" />-->
-
+    <android:uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- <android:uses-permission android:name="android.permission.READ_PHONE_STATE" /> -->
     <application
         android:name=".RestApplication"
         android:allowBackup="true"
@@ -52,14 +51,18 @@
         </activity>
         <activity
             android:name=".activities.TimelineActivity"
-            android:label="@string/title_activity_timeline"
             android:icon="@drawable/twitter_bird_white"
+            android:label="@string/title_activity_timeline"
             android:theme="@style/AppTheme" >
         </activity>
         <activity
             android:name=".activities.TweetActivity"
             android:icon="@drawable/twitter_bird_white"
             android:label="@string/title_activity_tweet" >
+        </activity>
+        <activity
+            android:name=".activities.ProfileActivity"
+            android:label="@string/title_activity_profile" >
         </activity>
     </application>
 

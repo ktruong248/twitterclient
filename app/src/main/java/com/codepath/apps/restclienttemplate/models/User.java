@@ -16,6 +16,15 @@ public class User {
     private String profileImgUrl;
     private String description;
     private String screenName;
+    private long tweetCount;
+
+    public long getTweetCount() {
+        return tweetCount;
+    }
+
+    public void setTweetCount(long tweetCount) {
+        this.tweetCount = tweetCount;
+    }
 
     public String getName() {
         return name;
@@ -70,7 +79,7 @@ public class User {
             user.followersCount = jsonObject.getLong("followers_count");
             user.friendCount = jsonObject.getLong("friends_count");
             user.profileImgUrl = jsonObject.getString("profile_image_url");
-
+            user.tweetCount = jsonObject.getLong("statuses_count");
             
             return user;
         }catch (Exception e) {
@@ -91,6 +100,7 @@ public class User {
         sb.append(", profileImgUrl='").append(profileImgUrl).append('\'');
         sb.append(", description='").append(description).append('\'');
         sb.append(", screenName='").append(screenName).append('\'');
+        sb.append(", tweetCount='").append(tweetCount).append('\'');
         sb.append('}');
         return sb.toString();
     }

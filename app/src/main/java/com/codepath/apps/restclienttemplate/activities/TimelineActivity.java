@@ -89,6 +89,11 @@ public class TimelineActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void onProfileView(MenuItem menuItem) {
+        Intent intent = new Intent(this, ProfileActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == TWEET_REQUEST_CODE) {
