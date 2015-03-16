@@ -7,6 +7,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -16,6 +17,7 @@ import com.codepath.apps.restclienttemplate.R;
 import com.codepath.apps.restclienttemplate.RestApplication;
 import com.codepath.apps.restclienttemplate.RestClient;
 import com.codepath.apps.restclienttemplate.fragment.UserTimeLineFragment;
+import com.codepath.apps.restclienttemplate.handler.JSONObjectHttpErrorHandler;
 import com.codepath.apps.restclienttemplate.listener.EndlessScrollListener;
 import com.codepath.apps.restclienttemplate.models.User;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -47,13 +49,20 @@ public class ProfileActivity extends ActionBarActivity {
         }
 
         restClient = RestApplication.getRestClient();
-        restClient.getUserInfo(new JsonHttpResponseHandler() {
+        restClient.getUserInfo(screenName, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 User user = User.fromJSON(response); // current user
                 ActionBar supportActionBar = getSupportActionBar();
                 supportActionBar.setTitle(user.getScreenName());
                 populateProfileHeader(user);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Log.i(this.getClass().getSimpleName(), "failed " + errorResponse.toString(), throwable);
+                JSONObjectHttpErrorHandler handler = new JSONObjectHttpErrorHandler();
+                handler.handle(statusCode, headers, throwable, errorResponse, getApplicationContext());
             }
         });
     }

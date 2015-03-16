@@ -90,9 +90,18 @@ public class RestClient extends OAuthBaseClient {
         client.get(apiUrl, requestParams, handler);
     }
 
-    public void getUserInfo(AsyncHttpResponseHandler handler) {
-        String apiUrl = getApiUrl("account/verify_credentials.json");
+    public void getUserInfo(String screenName, AsyncHttpResponseHandler handler) {
+        String apiUrl = getApiUrl("users/show.json");
+        if(screenName == null || screenName.isEmpty()) {
+            apiUrl = getApiUrl("account/verify_credentials.json");
+            client.get(apiUrl, handler);
+        }else {
+            screenName = screenName.substring(1, screenName.length());
 
-        client.get(apiUrl, handler);
+            RequestParams requestParams = new RequestParams();
+            requestParams.put("screen_name", screenName);
+            client.get(apiUrl, requestParams, handler);
+        }
+
     }
 }

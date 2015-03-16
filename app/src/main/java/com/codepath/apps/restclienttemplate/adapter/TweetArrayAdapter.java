@@ -1,6 +1,7 @@
 package com.codepath.apps.restclienttemplate.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -11,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.codepath.apps.restclienttemplate.R;
+import com.codepath.apps.restclienttemplate.RestApplication;
+import com.codepath.apps.restclienttemplate.activities.ProfileActivity;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.makeramen.RoundedTransformationBuilder;
 import com.squareup.picasso.Picasso;
@@ -45,7 +48,7 @@ public class TweetArrayAdapter extends ArrayAdapter<Tweet> {
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Tweet tweet = getItem(position);
+        final Tweet tweet = getItem(position);
         ViewHolder viewHolder;
         
         if(convertView == null) {
@@ -71,7 +74,17 @@ public class TweetArrayAdapter extends ArrayAdapter<Tweet> {
                 .cornerRadiusDp(30)
                 .build();
         Picasso.with(getContext()).load(tweet.getUser().getProfileImgUrl()).transform(transformation).fit().placeholder(R.drawable.ic_launcher).into(viewHolder.profileImageUrl);
-        
+        viewHolder.profileImageUrl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), ProfileActivity.class);
+                intent.putExtra("screenName", tweet.getUser().getScreenName());
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                getContext().startActivity(intent);
+            }
+        });
+
         viewHolder.userName.setText(tweet.getUser().getName());
         viewHolder.screenName.setText(tweet.getUser().getScreenName());
         viewHolder.tweetSince.setText(tweet.getCreatedAt());
